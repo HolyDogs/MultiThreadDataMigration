@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mybatisplus.mapper.IppMapper">
+
+    <select id="findData" resultType="com.example.mybatisplus.entity.UserSpace">
+      select * from (select username,default_tablespace from dba_users order by username)
+    </select>
+
+    <!-- 插入迁移表 -->
+    <insert id="insertToDataMove">
+        insert into "yw_system_data_move"(SJQY_ID,QSSJ,JZSJ,SJID,ZBID,ZBMC,ZBMCFZ,SZ,DWID,DWMC,DQID,DQMC,LYID) values(
+        #{theMap.ID},#{theMap.MONTH_MTH_START_DATE},#{theMap.MONTH_END_DATE},#{theMap.TIME_ID},
+        #{theMap.ENROL_ID},#{theMap.ENROL_NAME},#{theMap.ZBMCFZ},#{theMap.ROW,jdbcType=VARCHAR,typeHandler=com.example.mybatisplus.handler.NullValueHandler},#{theMap.ORG_ID},
+        #{theMap.ORG_NAME},#{theMap.AREA_ID},#{theMap.AREA_NAME},#{theMap.LYID})
+    </insert>
+
+
+</mapper>

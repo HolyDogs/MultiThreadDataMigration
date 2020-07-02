@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mybatisplus.mapper.MyMapper">
+
+
+<!--    <select id="findData" resultType="java.util.HashMap">
+        select * from (select distinct *UUID,QSSHIJIAN,JIEZHISHIJIAN,dg.TIME_ID,bimf.ENROL_ID,bimf.ENROL_NAME from GYJCDG.M_FINANCIAL_CONDITION dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.T_UUMS_BASE_ORG bitu
+        on dg.org_id=bitu.org_id
+        left join GYJCBI.M_FINANCIAL_CONDITION_DIM bimf
+        on dg.dim_id=bimf.enrol_id
+        left join GYJCDG.PROJECT_AREA_DIM bimf
+        on dg.area_id=bimf.area_id
+        ORDER BY dg.TIME_ID,dg.AREA_ID,dg.org_id,dg.DIM_ID)
+        where rownum &lt; 30
+    </select>-->
+
+    <!--重点企业财务状况主要经济指标-->
+    <select id="selectNeedData" resultType="java.util.HashMap">
+        select distinct bi.MONTH_MTH_START_DATE,bi.MONTH_END_DATE,dg.TIME_ID,bimf.ENROL_ID,bimf.ENROL_NAME,dg.ROW1,dg.ROW2,dg.ORG_ID,bitu.ORG_NAME,bitu.ORG_AREACODE,bimf.AREA_NAME from GYJCDG.M_FINANCIAL_CONDITION dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.T_UUMS_BASE_ORG bitu
+        on dg.org_id=bitu.org_id
+        left join GYJCBI.M_FINANCIAL_CONDITION_DIM bimf
+        on dg.dim_id=bimf.enrol_id
+        left join GYJCDG.PROJECT_AREA_DIM bimf
+        on dg.area_id=bimf.area_id
+    </select>
+
+    <!--分行业工业企业主要经济指标-->
+    <select id="selectFHYGYJJData" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.MO_DIV_INDUS_MAIN_FINANC dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.MO_DIV_INDUS_MAIN_FINANC_DIM bimf
+        on dg.DIM_ID=bimf.ENROL_ID
+        WHERE ENROL_ID!='047' AND ENROL_ID!='048'
+        AND (ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW3 IS NOT NULL OR ROW4 IS NOT NULL OR ROW5 IS NOT NULL OR ROW6 IS NOT NULL OR ROW7 IS NOT NULL
+         OR ROW8 IS NOT NULL OR ROW9 IS NOT NULL OR ROW10 IS NOT NULL OR ROW11 IS NOT NULL )
+        ORDER BY dg.TIME_ID,bi.month_id,dg.DIM_ID
+    </select>
+
+    <!--分行业工业生产者出厂价格指数-->
+    <select id="selectFHYSCZData" resultType="java.util.HashMap">
+        select distinct dg.*,bi.*,bimf.ENROL_NAME from GYJCDG.M_DIVINDUS_OUTPRICE_INDEX  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.M_DIVINDUS_OUTPRICE_INDEX_DIM bimf
+        on dg.ENROL_ID=bimf.ENROL_ID
+        WHERE ROW1 IS NOT NULL
+        ORDER BY dg.TIME_ID,bi.month_id,dg.ENROL_ID
+    </select>
+    <!--dg.*,bi.*,bimf.ENROL_NAME-->
+
+    <!--全社会用电分类（全口径）-->
+    <select id="selectQSHYDFLData" resultType="java.util.HashMap">
+        select distinct dg.*,bi.*,bimf.DIM_NAME from GYJCDG.M_SOCIAL_POWER_CLASSIFICA dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.M_SOCIAL_POWER_CLASSIFICA_DIM bimf
+        on dg.DIM_ID=bimf.DIM_ID
+        WHERE DIM_ID <![CDATA[ >= ]]> 17 AND DIM_ID <![CDATA[ <= ]]> 71
+        ORDER BY dg.TIME_ID
+    </select>
+
+    <!--5、中国制造业采购经理指数-->
+    <select id="selectZGZZCGData" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.MO_CHINA_PMI_INDEX  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.MO_CHINA_PMI_INDEX_DIM bimf
+        on dg.DIM_ID=bimf.enrol_id
+        ORDER BY dg.TIME_ID,dg.DIM_ID
+    </select>
+
+    <!--6、重点工业园区主要经济指标-->
+    <select id="selectZDGYYQData" resultType="java.util.HashMap">
+        select distinct dg.*,bi.*,bimf.ENROL_ID,bimf.ENROL_NAME,bimf.ORG_ID from GYJCDG.MO_ZD_IND_PARK_MAIN_INDEX  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.MO_ZD_IND_PARK_MAIN_INDEX_DIM bimf
+        on dg.calling_id=bimf.enrol_id
+        ORDER BY dg.TIME_ID,dg.calling_id
+    </select>
+
+
+    <!--7、重点企业产销总值及主要产品产量 147074-->
+    <select id="selectZDQYCXData" resultType="java.util.HashMap">
+        select distinct bi.MONTH_MTH_START_DATE,bi.MONTH_END_DATE,dg.TIME_ID,bimf.ENROL_ID,bimf.ENROL_NAME,dg.ROW1,dg.ROW2,dg.ROW3,dg.ROW4,dg.ORG_ID,bitu.ORG_NAME,dg.AREA_ID,bimf.AREA_NAME from GYJCDG.M_INDUS_SALES_MAJOR_PROD  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCDG.PROJECT_AREA_DIM bimf
+        on dg.area_id=bimf.area_id
+        left join GYJCBI.M_INDUS_SALES_MAJOR_PROD_DIM bimf
+        on SUBSTR(dg.dim_id, 1, 3)=bimf.enrol_id
+        left join GYJCBI.T_UUMS_BASE_ORG bitu
+        on dg.org_id=bitu.org_id
+        where (dg.row1 is not null or dg.row2 is not null or dg.row3 is not null or dg.row4 is not null)
+    </select>
+
+    <!--8、重点企业主要产品销售、库存、订货及价格-->
+    <select id="selectZDQYCPXSData" resultType="java.util.HashMap">
+        select distinct dg.*,bitu.ORG_NAME,bimf.AREA_NAME,bi.MONTH_MTH_START_DATE,bi.MONTH_END_DATE from GYJCDG.M_INDUS_PROD_SALE_INV_ORD  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCDG.PROJECT_AREA_DIM bimf
+        on dg.area_id=bimf.area_id
+        left join GYJCBI.T_UUMS_BASE_ORG bitu
+        on dg.org_id=bitu.org_id
+    </select>
+
+    <!--9、重点企业主要经济指标月报表-->
+    <select id="selectZDQYJJZBData" resultType="java.util.HashMap">
+        select distinct dg.*,bi.*,bimf.DIM_NAME from GYJCDG.M_JX_PROVINCE_MAIN_INDEX  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.M_JX_PROVINCE_MAIN_INDEX_DIM bimf
+        on dg.dim_id=bimf.dim_id
+        WHERE (dg.ROW1 IS NOT NULL OR dg.ROW2 IS NOT NULL)
+    </select>
+
+    <!--10、园区工业企业主要经济指标-->
+    <select id="selectYQGYQYJJZBData" resultType="java.util.HashMap">
+        select distinct dg.*,bitu.ORG_NAME,bimf.AREA_NAME,bimf.ENROL_ID,bimf.ENROL_NAME,bi.MONTH_MTH_START_DATE,bi.MONTH_END_DATE from GYJCDG.M_PARK_QY_MAIN_INDEX  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCDG.PROJECT_AREA_DIM bimf
+        on dg.area_id=bimf.area_id
+        left join GYJCBI.M_PARK_QY_MAIN_INDEX_DIM bimf
+        on dg.dim_id=bimf.enrol_id
+        left join GYJCBI.T_UUMS_BASE_ORG bitu
+        on dg.org_id=bitu.org_id
+        WHERE dg.ROW1 IS NOT NULL OR dg.ROW2 IS NOT NULL
+    </select>
+
+    <!--11、各设区市主要经济指标-->
+    <select id="selectSQJJZBData11" resultType="java.util.HashMap">
+        select distinct dg.*,bi.*,bimf.DIM_NAME from GYJCDG.M_ALL_THE_CITY_MAIN_INDEX  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.M_ALL_THE_CITY_MAIN_INDEX_DIM bimf
+        on dg.dim_id=bimf.dim_id
+        WHERE ROW3 IS NOT NULL OR ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW4 IS NOT NULL OR ROW5 IS NOT NULL OR ROW6 IS NOT NULL OR ROW7 IS NOT NULL OR ROW8 IS NOT NULL OR ROW9 IS NOT NULL OR ROW10 IS NOT NULL OR ROW11 IS NOT NULL OR ROW12 IS NOT NULL OR ROW13 IS NOT NULL OR ROW14 IS NOT NULL OR ROW15 IS NOT NULL OR ROW16 IS NOT NULL OR ROW17 IS NOT NULL OR ROW18 IS NOT NULL OR ROW19 IS NOT NULL OR ROW20 IS NOT NULL
+    </select>
+
+    <!--12、工业企业主要经济指标-->
+    <select id="selectGYQYZYJJZBData12" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.MO_INDUS_MAIN_FINANCIAL  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.MO_INDUS_MAIN_FINANCIAL_DIM bimf
+        on dg.calling_id=bimf.enrol_id
+        where ROW3 IS NOT NULL OR ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW4 IS NOT NULL OR ROW5 IS NOT NULL OR ROW6 IS NOT NULL OR ROW7 IS NOT NULL OR ROW8 IS NOT NULL OR ROW9 IS NOT NULL OR ROW10 IS NOT NULL OR ROW11 IS NOT NULL OR ROW12 IS NOT NULL OR ROW13 IS NOT NULL OR ROW14 IS NOT NULL OR ROW15 IS NOT NULL OR ROW16 IS NOT NULL OR ROW17 IS NOT NULL OR ROW18 IS NOT NULL OR ROW19 IS NOT NULL OR ROW20 IS NOT NULL OR ROW21 IS NOT NULL OR ROW22 IS NOT NULL OR ROW23 IS NOT NULL OR ROW24 IS NOT NULL OR ROW25 IS NOT NULL OR ROW26 IS NOT NULL OR ROW27 IS NOT NULL OR ROW28 IS NOT NULL OR ROW29 IS NOT NULL
+    </select>
+
+    <!--13、工业园区主要经济指标-->
+    <select id="selectGYYQZYJJZBData13" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.MO_INDUS_PARK_MAIN_INDEX  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.MO_INDUS_PARK_MAIN_INDEX_DIM bimf
+        on dg.calling_id=bimf.enrol_id
+        where ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW3 IS NOT NULL OR ROW4 IS NOT NULL
+    </select>
+
+    <!--14、工业增加值完成情况-->
+    <select id="selectGYZJZData14" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.MO_INDUS_VALUES_ADDED  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.MO_INDUS_VALUES_ADDED_DIM bimf
+        on dg.calling_id=bimf.enrol_id
+        where ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW3 IS NOT NULL OR ROW4 IS NOT NULL
+    </select>
+
+    <!--15、工业主要产品产量-->
+    <select id="selectGYZYCPCLData15" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.MO_INDUS_MAIN_PROD_OUTPUT  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.MO_INDUS_MAIN_PROD_OUTPUT_DIM bimf
+        on dg.calling_id=bimf.enrol_id
+        where ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW3 IS NOT NULL OR ROW4 IS NOT NULL
+    </select>
+
+    <!--16、江西省工业分县（市、区）主要经济指标-->
+    <select id="selectJXSGYFXJJZBData16" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.MO_INDUS_MAIN_ECON_INDEX  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCBI.MO_INDUS_MAIN_ECON_INDEX_DIM bimf
+        on dg.calling_id=bimf.enrol_id
+        where ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW3 IS NOT NULL OR ROW4 IS NOT NULL OR ROW5 IS NOT NULL OR ROW6 IS NOT NULL OR ROW7 IS NOT NULL OR ROW8 IS NOT NULL
+    </select>
+
+    <!--17、全国各地区工业增加值（只抽江西的）-->
+    <select id="selectQGGDQGYZJZSevenTData17" resultType="java.util.HashMap">
+        select distinct dg.*,bi.*,bimf.AREA_NAME from GYJCDG.MO_NATION_INDUS_ADD_VALUE  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        left join GYJCDG.PROJECT_AREA_DIM bimf
+        on dg.area_id=bimf.area_id
+        WHERE dg.calling_id='019' and (ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW3 IS NOT NULL OR ROW4 IS NOT NULL)
+    </select>
+
+    <!--18、全国各地区工业产品销售率（只抽江西的）-->
+    <select id="selectQGGDQGYCPXSLData18" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.MO_NATION_INDUS_ADD_SALES  dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        WHERE dg.calling_id='019' and (ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW3 IS NOT NULL OR ROW4 IS NOT NULL)
+    </select>
+
+    <!--19、全国分地区工业增加值和产品销售率完成情况-->
+    <select id="selectGYZJZCPXSLData19" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.M_NATION_INDUS_VALUE_N_SALES dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        WHERE dg.dim_id='360000' and (ROW3 IS NOT NULL OR ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW4 IS NOT NULL OR ROW5 IS NOT NULL OR ROW6 IS NOT NULL OR ROW7 IS NOT NULL OR ROW8 IS NOT NULL OR ROW9 IS NOT NULL OR ROW10 IS NOT NULL OR ROW11 IS NOT NULL OR ROW12 IS NOT NULL OR ROW13 IS NOT NULL OR ROW14 IS NOT NULL OR ROW15 IS NOT NULL OR ROW16 IS NOT NULL OR ROW17 IS NOT NULL OR ROW18 IS NOT NULL OR ROW19 IS NOT NULL OR ROW20 IS NOT NULL)
+    </select>
+
+    <!--20、全国分地区主要工业产品生产完成情况（一）-->
+    <select id="selectZYGYCPWCQKData20" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.M_NATION_MAIN_PROD_CASE1 dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        WHERE dg.dim_id='360000' AND (ROW3 IS NOT NULL OR ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW4 IS NOT NULL OR ROW5 IS NOT NULL OR ROW6 IS NOT NULL OR ROW7 IS NOT NULL OR ROW8 IS NOT NULL OR ROW9 IS NOT NULL OR ROW10 IS NOT NULL OR ROW11 IS NOT NULL OR ROW12 IS NOT NULL OR ROW13 IS NOT NULL OR ROW14 IS NOT NULL OR ROW15 IS NOT NULL OR ROW16 IS NOT NULL OR ROW17 IS NOT NULL OR ROW18 IS NOT NULL OR ROW19 IS NOT NULL OR ROW20 IS NOT NULL)
+    </select>
+
+    <!--21、全国分地区主要工业产品生产完成情况（二）-->
+    <select id="selectZYGYCPWCQKTwoData21" resultType="java.util.HashMap">
+        select distinct * from GYJCDG.M_NATION_MAIN_PROD_CASE2 dg
+        left join GYJCBI.PUBLIC_TIME_DIM bi
+        on dg.time_id=bi.month_id
+        WHERE dg.dim_id='360000' AND (ROW3 IS NOT NULL OR ROW1 IS NOT NULL OR ROW2 IS NOT NULL OR ROW4 IS NOT NULL OR ROW5 IS NOT NULL OR ROW6 IS NOT NULL OR ROW7 IS NOT NULL OR ROW8 IS NOT NULL OR ROW9 IS NOT NULL OR ROW10 IS NOT NULL OR ROW11 IS NOT NULL OR ROW12 IS NOT NULL OR ROW13 IS NOT NULL OR ROW14 IS NOT NULL OR ROW15 IS NOT NULL OR ROW16 IS NOT NULL OR ROW17 IS NOT NULL OR ROW18 IS NOT NULL OR ROW19 IS NOT NULL OR ROW20 IS NOT NULL)
+    </select>
+
+</mapper>
